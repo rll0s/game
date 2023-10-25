@@ -1,81 +1,62 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>لعبة الحواجز</title>
-    <style>
-        #player {
-            width: 30px;
-            height: 30px;
-            background-color: blue;
-            position: relative;
-        }
-        
-        .obstacle {
-            width: 100px;
-            height: 20px;
-            background-color: red;
-            position: absolute;
-        }
-    </style>
+  <title>Football Game</title>
+  <style>
+    #field {
+      width: 500px;
+      height: 300px;
+      background-color: green;
+      position: relative;
+    }
+
+    #ball {
+      width: 20px;
+      height: 20px;
+      background-color: white;
+      border-radius: 50%;
+      position: absolute;
+    }
+  </style>
 </head>
 <body>
-    <h1>لعبة الحواجز</h1>
-    
-    <div id="player"></div>
-    
-    <div class="obstacle" style="top: 100px; left: 200px;"></div>
-    <div class="obstacle" style="top: 200px; left: 400px;"></div>
-    <div class="obstacle" style="top: 300px; left: 600px;"></div>
-    
-    <script>
-        document.addEventListener('keydown', function(event) {
-            var player = document.getElementById('player');
-            var playerTop = parseInt(player.style.top) || 0;
-            var playerLeft = parseInt(player.style.left) || 0;
-            
-            if (event.key === 'ArrowUp') {
-                player.style.top = (playerTop - 10) + 'px';
-            } else if (event.key === 'ArrowDown') {
-                player.style.top = (playerTop + 10) + 'px';
-            } else if (event.key === 'ArrowLeft') {
-                player.style.left = (playerLeft - 10) + 'px';
-            } else if (event.key === 'ArrowRight') {
-                player.style.left = (playerLeft + 10) + 'px';
-            }
-            
-            checkCollision();
-        });
-        
-        function checkCollision() {
-            var player = document.getElementById('player');
-            var obstacles = document.getElementsByClassName('obstacle');
-            
-            for (var i = 0; i < obstacles.length; i++) {
-                var obstacle = obstacles[i];
-                
-                if (isColliding(player, obstacle)) {
-                    alert('تم التصادم! أعد المحاولة.');
-                    resetGame();
-                    break;
-                }
-            }
-        }
-        
-        function isColliding(element1, element2) {
-            var rect1 = element1.getBoundingClientRect();
-            var rect2 = element2.getBoundingClientRect();
-            
-            return !(rect1.right < rect2.left || 
-                     rect1.left > rect2.right || 
-                     rect1.bottom < rect2.top || 
-                     rect1.top > rect2.bottom);
-        }
-        
-        function resetGame() {
-            var player = document.getElementById('player');
-            player.style.top = '0';
-            player.style.left = '0';
-        }
-    </script>
+  <h1>Football Game</h1>
+
+  <div id="field">
+    <div id="ball"></div>
+  </div>
+
+  <script>
+    // Game variables
+    let ballX = 0;
+    let ballY = 0;
+    let ballSpeedX = 2;
+    let ballSpeedY = 1;
+
+    const field = document.getElementById("field");
+    const ball = document.getElementById("ball");
+
+    // Update the game state
+    function updateGameState() {
+      ballX += ballSpeedX;
+      ballY += ballSpeedY;
+
+      // Check ball collisions with the field boundaries
+      if (ballX + ball.clientWidth >= field.clientWidth || ballX <= 0) {
+        ballSpeedX *= -1;
+      }
+
+      if (ballY + ball.clientHeight >= field.clientHeight || ballY <= 0) {
+        ballSpeedY *= -1;
+      }
+
+      // Update the ball position
+      ball.style.left = ballX + "px";
+      ball.style.top = ballY + "px";
+    }
+
+    // Start the game loop
+    const gameLoop = setInterval(updateGameState, 10);
+  </script>
 </body>
 </html>
