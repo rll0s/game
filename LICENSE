@@ -1,21 +1,103 @@
-MIT License
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Webpage</title>
+</head>
+<body>
+  <h1>Welcome to My Webpage</h1>
+  <p>This is a sample webpage.</p>
 
-Copyright (c) 2023 rll0s
+  <button id="startButton">Start Game</button>
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+  <div id="gameContainer" style="display: none;">
+    <p id="question"></p>
+    <input type="text" id="answer" placeholder="Enter your answer">
+    <button id="checkButton">Check</button>
+    <p id="result"></p>
+  </div>
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+  <script>
+    document.getElementById("startButton").addEventListener("click", startGame);
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+    function startGame() {
+      // Game variables
+      let score = 0;
+      let time = 10;
+      let currentQuestion = null;
+
+      // Define the questions and answers
+      const questions = [
+        { question: "What is the capital of France?", answer: "Paris" },
+        { question: "What is the largest planet in our solar system?", answer: "Jupiter" },
+        { question: "What is the chemical symbol for gold?", answer: "Au" }
+        // Add more questions here
+      ];
+
+      // Update the game state
+      function updateGameState() {
+        score++;
+        time--;
+
+        if (time === 0) {
+          endGame();
+        } else {
+          showQuestion();
+          updateUI();
+        }
+      }
+
+      // Show a random question
+      function showQuestion() {
+        currentQuestion = questions[Math.floor(Math.random() * questions.length)];
+        document.getElementById("question").textContent = currentQuestion.question;
+      }
+
+      // Check the player's answer
+      function checkAnswer() {
+        const playerAnswer = document.getElementById("answer").value;
+
+        if (playerAnswer.toLowerCase() === currentQuestion.answer.toLowerCase()) {
+          document.getElementById("result").textContent = "Correct!";
+        } else {
+          document.getElementById("result").textContent = "Wrong answer!";
+        }
+      }
+
+      // Update the UI
+      function updateUI() {
+        document.getElementById("score").textContent = `Score: ${score}`;
+        document.getElementById("time").textContent = `Time: ${time} seconds`;
+      }
+
+      // End the game
+      function endGame() {
+        clearInterval(gameLoop);
+        document.getElementById("gameContainer").style.display = "none";
+        alert(`Game over! Final score: ${score}`);
+        resetGame();
+      }
+
+      // Reset the game
+      function resetGame() {
+        score = 0;
+        time = 10;
+        currentQuestion = null;
+        updateUI();
+        document.getElementById("startButton").disabled = false;
+      }
+
+      // Start the game
+      function startGame() {
+        document.getElementById("startButton").disabled = true;
+        document.getElementById("gameContainer").style.display = "block";
+        gameLoop = setInterval(updateGameState, 1000);
+        showQuestion();
+        updateUI();
+      }
+
+      // Add event listener to the Check button
+      document.getElementById("checkButton").addEventListener("click", checkAnswer);
+    }
+  </script>
+</body>
+</html>
